@@ -25,7 +25,7 @@ if (!$conexion) {
             position: fixed;
             top: 20px;
             right: 20px;
-            background-color: #08a0f2; /* Verde éxito */
+            background-color: #2ecc71; /* Verde éxito */
             color: white;
             padding: 15px 25px;
             border-radius: 4px;
