@@ -1,0 +1,403 @@
+/* ==========================================================================
+   ESTILOS GENERALES DEL SISTEMA
+   ========================================================================== */
+body {
+    background-color: #ededed;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+#container {
+    padding: 30px;
+}
+
+/* Modificación para centrar el título horizontalmente */
+#container h1 {
+    font-size: 26px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: #333;
+}
+
+/* ==========================================================================
+   ESTRUCTURA DEL HEADER (Barra Superior Verde Claro)
+   ========================================================================== */
+header {
+    width: 100%;
+    background-color: #7da381; /* Verde claro de fondo de la barra superior */
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    color: #ffffff;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* Barra de Opciones del Usuario (Derecha) */
+.optionsBar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+}
+
+.optionsBar p {
+    margin: 0;
+    text-transform: capitalize; /* Para formatear la fecha de Coro nicely */
+}
+
+.optionsBar span {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.optionsBar .user {
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* Iconos de usuario y cerrar sesión */
+.photouser {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
+.close {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+}
+
+.close:hover {
+    transform: scale(1.1); /* Efecto sutil al pasar sobre el botón de salir */
+}
+
+/* ==========================================================================
+   MENÚ DE NAVEGACIÓN (Barra Verde Oscuro)
+   ========================================================================== */
+nav {
+    background-color: #046a5b; /* Verde oscuro del menú de navegación */
+    padding: 0 20px;
+}
+
+/* Lista Principal */
+nav > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+nav > ul > li {
+    position: relative; /* Necesario para posicionar los submenús */
+}
+
+/* Enlaces del Menú Principal */
+nav ul li a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 20px 25px;
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background 0.3s ease;
+}
+
+/* Margen para iconos de FontAwesome que agregaste */
+nav ul li a i {
+    margin-right: 8px;
+}
+
+/* Hover en los elementos principales */
+nav > ul > li:hover > a {
+    background-color: #035246; /* Oscurece un poco el fondo al pasar el mouse */
+}
+
+/* ==========================================================================
+   SUBMENÚS DESPLEGABLES (Productos, Categorías, etc.)
+   ========================================================================== */
+nav ul li ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 220px;
+    background-color: #046a5b;
+    box-shadow: 0px 5px 10px rgba(0,0,0,0.15);
+    display: none; /* Ocultos por defecto */
+    z-index: 999;
+}
+
+/* Enlaces del submenú */
+nav ul li ul li a {
+    padding: 15px 20px;
+    font-size: 13px;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Hover en los submenús */
+nav ul li ul li:hover a {
+    background-color: #035246;
+}
+
+/* Mostrar el submenú dinámicamente cuando pasas el mouse por encima */
+nav ul li:hover ul {
+    display: block;
+}
+
+/**********************************************/
+
+/* ==========================================================================
+   ESTILOS PARA EL FORMULARIO DE REGISTRO DE PRODUCTOS
+   ========================================================================== */
+
+/* Contenedor principal de la sección */
+#container {
+    padding: 40px 20px;
+    background-color: #ededed; /* Fondo gris claro como el resto del sistema */
+    min-height: calc(100vh - 200px); /* Asegura que cubra la pantalla */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* Tarjeta del Formulario */
+.form_register {
+    width: 100%;
+    max-width: 450px;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    font-family: Arial, sans-serif;
+}
+
+/* Título e indicador */
+.form_register h1 {
+    font-size: 24px;
+    color: #333333;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.form_register hr {
+    border: none;
+    height: 1px;
+    background-color: #e0e0e0;
+    margin-bottom: 20px;
+}
+
+/* Etiquetas (Labels) */
+.form_register label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    color: #4a5568;
+    margin-bottom: 8px;
+    margin-top: 15px;
+}
+
+/* Inputs, Selects y Elementos de formulario */
+.form_register input[type="text"],
+.form_register input[type="number"],
+.form_register select {
+    width: 100%;
+    padding: 12px;
+    font-size: 15px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    background-color: #f8fafc;
+    color: #334155;
+    outline: none;
+    transition: all 0.3s ease;
+    box-sizing: border-box; /* Evita que el padding deforme el ancho */
+}
+
+/* Efecto Focus al hacer clic en los campos */
+.form_register input:focus,
+.form_register select:focus {
+    border-color: #1e7e34; /* Verde sutil que combina con tu header */
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(30, 126, 52, 0.15);
+}
+
+/* Botón de Guardar */
+.btn_save {
+    width: 100%;
+    padding: 14px;
+    background-color: #1a6b54; /* Verde institucional como tu menú */
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 25px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn_save:hover {
+    background-color: #124d3c; /* Verde más oscuro al pasar el cursor */
+}
+
+.btn_save:active {
+    transform: scale(0.98); /* Efecto de hundido al presionar */
+}
+
+/* ==========================================================================
+   ESTILOS PARA LAS ALERTAS DINÁMICAS (PHP)
+   ========================================================================== */
+
+.alert {
+    width: 100%;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+/* Mensaje de Error (Rojo) */
+.msg_error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Mensaje de Éxito / Guardado (Verde) */
+.msg_save {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 14px;
+    margin: 0;
+}
+
+/******************************/
+
+/* ==========================================================================
+   ESTILOS PARA LA TABLA DE LISTAS (PRODUCTOS / CATEGORÍAS)
+   ========================================================================== */
+.data_table {
+    width: 100%;
+    max-width: 1000px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.header_table {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #046a5b;
+    padding-bottom: 10px;
+}
+
+.header_table h1 {
+    font-size: 22px;
+    color: #333;
+    margin: 0;
+}
+
+/* Botón Crear Nueva Categoría */
+.btn_new {
+    display: inline-block;
+    background: #046a5b;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.btn_new:hover {
+    background: #035246;
+}
+
+/* Estructura de la Tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    text-align: left;
+}
+
+table th {
+    background: #7da381; /* Verde claro del header secundario */
+    color: #fff;
+    padding: 12px;
+    font-size: 15px;
+}
+
+table td {
+    padding: 12px;
+    border-bottom: 1px solid #e0e0e0;
+    color: #555;
+    font-size: 14px;
+}
+
+/* Filas intercaladas para leer mejor (zebra striping) */
+table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* Botones de Acción (Editar y Eliminar) */
+.link_edit, .link_delete {
+    padding: 6px 10px;
+    border-radius: 4px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 5px;
+    display: inline-block;
+}
+
+.link_edit {
+    background: #4ca1af;
+}
+.link_edit:hover {
+    background: #398996;
+}
+
+.link_delete {
+    background: #dc3545;
+}
+.link_delete:hover {
+    background: #bd2130;
+}

@@ -1,0 +1,82 @@
+/*************************************************************************************/
+/* ESTILOS PARA LA PÁGINA DE INICIO (index.php)                                      */
+/*************************************************************************************/
+
+/* Contenedor principal de la bienvenida */
+#container {
+    padding: 90px 20px 30px; /* Ajuste de espacio superior para que no lo tape el header */
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Sección del título principal */
+.welcome_block {
+    background: #FFF;
+    padding: 30px;
+    border-radius: 10px;
+    border: 1px solid #d1d1d1;
+    margin-bottom: 30px;
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.05);
+}
+
+.welcome_block h1 {
+    color: #147556; /* Verde institucional del sistema que usas en el menú */
+    font-size: 24pt;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.welcome_block p {
+    color: #666;
+    font-size: 11pt;
+    letter-spacing: 0.5px;
+}
+
+/* Contenedor de Tarjetas de Accesos Rápidos o Estadísticas */
+.dashboard_grid {
+    display: block; /* Compatibilidad limpia sin flex avanzado */
+    width: 100%;
+    margin-top: 20px;
+}
+
+.card_dash {
+    background: #FFF;
+    width: 31%;
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 2%;
+    padding: 25px 20px;
+    border-radius: 8px;
+    border: 1px solid #d1d1d1;
+    box-shadow: 0px 2px 4px rgba(0,0,0,0.02);
+    text-align: center;
+}
+
+.card_dash:last-child {
+    margin-right: 0; /* Quita el margen a la última tarjeta */
+}
+
+/* Colores de acento para las tarjetas tipo dashboard */
+.card_dash i {
+    font-size: 35pt;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.card_products i { color: #3c93b0; } /* Azul para productos */
+.card_categories i { color: #147556; } /* Verde para categorías */
+.card_sales i { color: #e67e22; } /* Naranja para ventas */
+
+.card_dash h3 {
+    color: #333;
+    font-size: 14pt;
+    margin-bottom: 5px;
+}
+
+.card_dash p {
+    color: #777;
+    font-size: 10pt;
+    letter-spacing: 0px;
+}
