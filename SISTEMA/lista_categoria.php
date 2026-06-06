@@ -48,6 +48,80 @@ if (!$conexion) {
 </head>
 <body>
     <?php include "include/header.php"; ?>
+    <?php if (isset($_GET['msg']) && $_GET['msg'] == 'updated'): ?>
+    
+    <style>
+        .custom-toast {
+            position: fixed;
+            top: 20px;
+            right: -400px; /* Inicia oculto a la derecha */
+            background-color: #2ecc71; /* Verde éxito */
+            color: #ffffff;
+            padding: 16px 25px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-family: 'Open Sans', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            transition: right 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .custom-toast.show {
+            right: 20px; /* Se desliza a su posición visible */
+        }
+
+        .custom-toast i {
+            font-size: 20px;
+        }
+
+        .custom-toast .toast-close {
+            margin-left: 15px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .custom-toast .toast-close:hover {
+            opacity: 1;
+        }
+    </style>
+
+    <div id="toastMessage" class="custom-toast">
+        <i class="fas fa-check-circle"></i>
+        <span>¡Categoría actualizada exitosamente!</span>
+        <i class="fas fa-times toast-close" onclick="closeToast()"></i>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var toast = document.getElementById("toastMessage");
+            
+            // Aparece a los 200 milisegundos de cargar la página
+            setTimeout(function() {
+                toast.classList.add("show");
+            }, 200);
+
+            // Se desvanece automáticamente después de 4 segundos
+            setTimeout(function() {
+                closeToast();
+            }, 4200);
+        });
+
+        function closeToast() {
+            var toast = document.getElementById("toastMessage");
+            if(toast) {
+                toast.classList.remove("show");
+                // Remueve el elemento del HTML una vez termine la transición
+                setTimeout(function() {
+                    toast.remove();
+                }, 500);
+            }
+        }
+    </script>
+
+<?php endif; ?>
     
     <?php if (isset($_GET['msg'])): ?>
         <?php 

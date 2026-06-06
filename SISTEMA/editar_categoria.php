@@ -14,7 +14,7 @@ if (!$conexion) {
 
 $alert = '';
 
-// 2. ACTUALIZAR LOS DATOS (Cuando el usuario presiona el botón)
+// 2. ACTUALIZAR LOS DATOS
 if (!empty($_POST)) {
     if (empty($_POST['nombre_categoria']) || empty($_POST['id'])) {
         $alert = '<p class="msg_error">El nombre de la categoría es obligatorio.</p>';
@@ -22,18 +22,17 @@ if (!empty($_POST)) {
         $id_categoria = intval($_POST['id']);
         $nombre_categoria = mysqli_real_escape_string($conexion, $_POST['nombre_categoria']);
 
-        // Verificar que el nuevo nombre no exista ya en OTRA categoría diferente
         $query_check = mysqli_query($conexion, "SELECT * FROM categorias WHERE nombre_categoria = '$nombre_categoria' AND id_categoria != $id_categoria");
-        $result_check = mysqli_fetch_array($query_check);
-
-        if ($result_check > 0) {
+        
+        if (mysqli_num_rows($query_check) > 0) {
             $alert = '<p class="msg_error">Ese nombre de categoría ya está en uso.</p>';
         } else {
-            // Actualizar registro
             $query_update = mysqli_query($conexion, "UPDATE categorias SET nombre_categoria = '$nombre_categoria' WHERE id_categoria = $id_categoria");
 
             if ($query_update) {
-                $alert = '<p class="msg_save">¡Categoría actualizada exitosamente!</p>';
+                // REDIRECCIÓN: Enviamos 'msg=updated' a la lista
+                header("Location: lista_categoria.php?msg=updated");
+                exit();
             } else {
                 $alert = '<p class="msg_error">Error de MySQL: No se pudo actualizar la categoría.</p>';
             }
@@ -41,7 +40,7 @@ if (!empty($_POST)) {
     }
 }
 
-// 3. CARGAR LOS DATOS ACTUALES (Para mostrarlos en los inputs al abrir la página)
+// 3. CARGAR LOS DATOS ACTUALES
 if (empty($_GET['id'])) {
     header('Location: lista_categoria.php');
     exit();
@@ -61,7 +60,7 @@ if ($result_data == 0) {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <?php include "include/scripts.php"; ?>
@@ -74,7 +73,7 @@ if ($result_data == 0) {
         <div class="form_register">
             <h1><i class="fas fa-edit"></i> Actualizar Categoría</h1>
             <hr>
-            <div class="alert"><?php echo isset($alert) ? $alert : ''; ?></div>
+            <div class="alert"><?php echo $alert; ?></div>
 
             <form action="" method="post">
                 <input type="hidden" name="id" value="<?php echo $id_cat; ?>">
