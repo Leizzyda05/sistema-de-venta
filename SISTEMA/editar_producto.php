@@ -6,6 +6,7 @@ $password = '';
 $database = 'sistema_de_venta'; 
 
 $conexion = @mysqli_connect($servername, $username, $password, $database);
+mysqli_set_charset($conexion, "utf8"); // <-- Agrega esta línea
 
 if (!$conexion) {
     echo "<script>alert('Error de conexión: " . mysqli_connect_error() . "');</script>";
@@ -108,7 +109,7 @@ if ($result_data == 0) {
                 </select>
 
                 <input type="submit" value="Actualizar Producto" class="btn_save">
-                <a href="lista_categoria.php" style="display: block; text-align: center; margin-top: 15px; color: #555; text-decoration: none;"><i class="fas fa-arrow-left"></i> Volver a la lista</a>
+                <a href="lista_dproducto.php" style="display: block; text-align: center; margin-top: 15px; color: #555; text-decoration: none;"><i class="fas fa-arrow-left"></i> Volver a la lista</a>
             </form>
         </div>
     </section>

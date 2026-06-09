@@ -6,6 +6,7 @@ $password = '';
 $database = 'sistema_de_venta'; 
 
 $conexion = @mysqli_connect($servername, $username, $password, $database);
+mysqli_set_charset($conexion, "utf8"); // <-- Agrega esta línea
 
 if (!$conexion) {
     echo "<script>alert('Error de conexión: " . mysqli_connect_error() . "');</script>";

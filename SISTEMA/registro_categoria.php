@@ -6,6 +6,7 @@ $password = ''; // Por defecto en phpMyAdmin viene vacío
 $database = 'sistema_de_venta'; // Nombre exacto de tu Base de Datos
 
 $conexion = @mysqli_connect($servername, $username, $password, $database);
+mysqli_set_charset($conexion, "utf8"); // <-- Agrega esta línea
 
 // Alerta de conexión mediante JavaScript
 if (!$conexion) {

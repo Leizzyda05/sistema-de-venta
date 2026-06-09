@@ -6,6 +6,7 @@ $password = '';
 $database = 'sistema_de_venta'; 
 
 $conexion = @mysqli_connect($servername, $username, $password, $database);
+mysqli_set_charset($conexion, "utf8"); 
 
 if (!$conexion) {
     die("Error de conexión con la base de datos.");
@@ -37,9 +38,7 @@ if ($html !== false && !empty($html)) {
     }
 }
 
-// -----------------------------------------------------------------
-// NUEVO: CAPTURAR EL TÉRMINO DE BÚSQUEDA
-// -----------------------------------------------------------------
+// CAPTURAR EL TÉRMINO DE BÚSQUEDA
 $busqueda = "";
 if (isset($_GET['busqueda'])) {
     $busqueda = mysqli_real_escape_with_like_support($conexion, trim($_GET['busqueda']));
@@ -55,19 +54,18 @@ function mysqli_real_escape_with_like_support($conn, $str) {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <?php include "include/scripts.php"; ?>
     <title>Lista de Productos</title>
     
     <style>
-        /* 1. CONTENEDOR EXTERNO: Mueve el buscador arriba de la tabla y lo alinea a la derecha */
         .contenedor_buscador_superior {
             display: flex;
-            justify-content: flex-end; /* Lo desplaza hacia el extremo derecho */
-            margin-bottom: 15px;       /* Crea un espacio de separación vertical con la tabla */
-            padding: 0 10px;           /* Evita que pegue al borde de la pantalla */
+            justify-content: flex-end; 
+            margin-bottom: 15px;      
+            padding: 0 10px;           
         }
 
-        /* 2. TU ESTILO BASE: Mantiene tu diseño original para la casilla */
         .form_search {
             display: flex;
             align-items: center;
@@ -75,14 +73,14 @@ function mysqli_real_escape_with_like_support($conn, $str) {
             padding: 5px;
             border-radius: 4px;
             border: 1px solid #ced4da;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Opcional: Sutil sombra para que combine con el entorno */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
         }
         .form_search input[type="text"] {
             border: none;
             padding: 5px 10px;
             outline: none;
             font-size: 14px;
-            width: 200px; /* Ancho controlado para que no se expanda de forma errática */
+            width: 200px; 
         }
         .form_search .btn_search {
             background: #2ecc71;
@@ -102,84 +100,118 @@ function mysqli_real_escape_with_like_support($conn, $str) {
             margin-left: 5px;
             font-size: 14px;
         }
-        .custom_alert_floating {
+
+        /* =========================================================================
+           ESTILOS PARA LAS NOTIFICACIONES FLOTANTES TIPO TOAST (INFERIOR DERECHA)
+           ========================================================================= */
+        .custom-toast-delete {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #2ecc71; /* Verde éxito */
-            color: white;
-            padding: 15px 25px;
-            border-radius: 4px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            bottom: 20px;       /* Posicionado abajo */
+            right: -400px;      /* Inicia oculto a la derecha fuera de la pantalla */
+            background-color: #2ecc71; /* Verde éxito por defecto */
+            color: #ffffff;
+            padding: 16px 25px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-family: 'Open Sans', sans-serif;
             font-size: 16px;
             font-weight: bold;
-            z-index: 9999;
             display: flex;
             align-items: center;
-            gap: 10px;
-            opacity: 1;
-            transform: translateY(0);
-            transition: opacity 0.5s ease, transform 0.5s ease;
+            gap: 12px;
+            z-index: 9999;
+            transition: right 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
-        .custom_alert_floating i {
+        /* Clase activa para activar el deslizamiento */
+        .custom-toast-delete.show {
+            right: 20px;       /* Se desliza a su posición visible abajo a la derecha */
+        }
+
+        .custom-toast-delete i {
             font-size: 20px;
-        }        
-</style>
+        }
+
+        .custom-toast-delete .toast-close-delete {
+            margin-left: 15px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .custom-toast-delete .toast-close-delete:hover {
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
-    <?php if (isset($_GET['msg']) && $_GET['msg'] == 'register_success'): ?>
-    <div id="alerta-flotante" class="custom_alert_floating">
-        <i class="fas fa-check-circle"></i> ¡Producto guardado exitosamente!
-    </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const alerta = document.getElementById('alerta-flotante');
-            if (alerta) {
-                // Se mantiene visible 3 segundos
-                setTimeout(() => {
-                    alerta.style.opacity = '0';
-                    alerta.style.transform = 'translateY(-20px)'; // Efecto visual de subida
-                    
-                    // Se elimina del DOM una vez termine la transición CSS
-                    setTimeout(() => {
-                        alerta.remove();
-                    }, 500); 
-                }, 3000);
-            }
-        });
-    </script>
-<?php endif; ?>
+    
     <?php include "include/header.php"; ?>
-    <?php if (isset($_GET['msg']) && $_GET['msg'] == 'success'): ?>
-    <div id="alerta-flotante" class="custom_alert_floating">
-        <i class="fas fa-check-circle"></i> ¡Producto actualizado exitosamente!
-    </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const alerta = document.getElementById('alerta-flotante');
-            if (alerta) {
-                // Espera 3 segundos (3000ms) y luego cambia la opacidad para el efecto de desvanecido
-                setTimeout(() => {
-                    alerta.style.opacity = '0';
-                    alerta.style.transform = 'translateY(-20px)'; // Pequeño efecto de subida al irse
-                    
-                    // Elimina por completo el elemento del HTML después de terminar la transición de CSS
-                    setTimeout(() => {
-                        alerta.remove();
-                    }, 500); 
-                }, 3000);
+    <?php 
+    $mensaje_alerta = "";
+    $bg_color = "#2ecc71"; // Verde por defecto
+    $icono = "fas fa-check-circle";
+
+    // Evaluar parámetros de redirección URL
+    if (isset($_GET['status'])) {
+        if ($_GET['status'] == 'deleted') {
+            $mensaje_alerta = "¡Producto eliminado correctamente!";
+        } elseif ($_GET['status'] == 'error') {
+            $mensaje_alerta = "No se pudo eliminar el producto del inventario.";
+            $bg_color = "#e74c3c"; // Rojo para fallos
+            $icono = "fas fa-exclamation-triangle";
+        }
+    } elseif (isset($_GET['msg'])) {
+        if ($_GET['msg'] == 'register_success') {
+            $mensaje_alerta = "¡Producto guardado exitosamente!";
+        } elseif ($_GET['msg'] == 'success') {
+            $mensaje_alerta = "¡Producto actualizado exitosamente!";
+        }
+    }
+    ?>
+
+    <?php if (!empty($mensaje_alerta)): ?>
+        <div id="toastDeleteMessage" class="custom-toast-delete" style="background-color: <?php echo $bg_color; ?>;">
+            <i class="<?php echo $icono; ?>"></i>
+            <span><?php echo $mensaje_alerta; ?></span>
+            <i class="fas fa-times toast-close-delete" onclick="closeToastDelete()"></i>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var toastDelete = document.getElementById("toastDeleteMessage");
+                
+                // Hace aparecer el toast deslizándose suavemente desde la derecha a los 200ms
+                setTimeout(function() {
+                    if(toastDelete) toastDelete.classList.add("show");
+                }, 200);
+
+                // Desaparece automáticamente después de 4 segundos (4000ms)
+                setTimeout(function() {
+                    closeToastDelete();
+                }, 4200);
+            });
+
+            function closeToastDelete() {
+                var toastDelete = document.getElementById("toastDeleteMessage");
+                if(toastDelete) {
+                    toastDelete.classList.remove("show"); // Inicia animación de salida
+                    setTimeout(function() {
+                        toastDelete.remove(); // Remueve el elemento del HTML por completo
+                    }, 500);
+                }
             }
-        });
-    </script>
-<?php endif; ?>
+            
+            // Limpia los parámetros de la barra de direcciones para evitar duplicados al recargar
+            window.history.replaceState({}, document.title, window.location.pathname);
+        </script>
+    <?php endif; ?>
+
     <section id="container">
         <div class="data_table"> 
             
             <div class="header_table">
-                
                 <h1><i class="fas fa-cube"></i> Lista de Productos</h1>
                 
                 <form action="" method="get" class="form_search">
@@ -198,8 +230,8 @@ function mysqli_real_escape_with_like_support($conn, $str) {
                     <tr>
                         <th>ID</th>
                         <th>Producto</th>
-                        <th>Precio (Bs.)</th>
                         <th>Precio (USD)</th>
+                        <th>Precio (Bs.)</th>
                         <th>Categoría</th>
                         <th>Fecha de Registro</th>
                         <th class="text-center">Acciones</th>
@@ -207,9 +239,6 @@ function mysqli_real_escape_with_like_support($conn, $str) {
                 </thead>
                 <tbody>
                     <?php
-                    // -------------------------------------------------------------
-                    // MODIFICADO: CONSULTA ADAPTATIVA CON FILTRO LIKE
-                    // -------------------------------------------------------------
                     $where = "";
                     if (!empty($busqueda)) {
                         $where = "WHERE p.nombre_producto LIKE '%$busqueda%'";
@@ -228,20 +257,23 @@ function mysqli_real_escape_with_like_support($conn, $str) {
                             $contador = 1; 
 
                             while ($data = mysqli_fetch_array($query)) {
-                                $precio_bs = (float)$data['precio_venta'];
-                                $precio_usd = ($tasa_dolar_num > 0) ? ($precio_bs / $tasa_dolar_num) : 0;
+                                $precio_usd = (float)$data['precio_venta'];
+                                $precio_bs = $precio_usd * $tasa_dolar_num;
                                 $fecha = date('d-m-Y g:i a', strtotime($data['date_add']));
                     ?>
                                 <tr>
                                     <td><?php echo $contador; ?></td>
                                     <td><?php echo $data['nombre_producto']; ?></td>
-                                    <td><b><?php echo number_format($precio_bs, 2, ',', '.'); ?> Bs.</b></td>
+                                    
                                     <td style="color: #0515f8; font-weight: bold;">$ <?php echo number_format($precio_usd, 2, '.', ','); ?></td>
+                                    
+                                    <td><b><?php echo number_format($precio_bs, 2, ',', '.'); ?> Bs.</b></td>
+                                    
                                     <td><?php echo $data['nombre_categoria']; ?></td>
                                     <td><?php echo $fecha; ?></td>
                                     <td class="text-center">
                                         <a class="link_edit" href="editar_producto.php?id=<?php echo $data['id_producto']; ?>"><i class="fas fa-edit"></i> Editar</a>
-                                        <a class="link_delete" href="eliminar_producto.php?id=<?php echo $data['id_producto']; ?>"><i class="fas fa-trash-alt"></i> Eliminar</a>
+                                        <button type="button" class="btn_delete" onclick="confirmarEliminacion(<?php echo $data['id_producto']; ?>)">Eliminar</button>
                                     </td>
                                 </tr>
                     <?php
@@ -258,6 +290,26 @@ function mysqli_real_escape_with_like_support($conn, $str) {
             </table>
         </div>
     </section>
+
+    <script>
+        function confirmarEliminacion(id) {
+            Swal.fire({
+                title: '¿Estás seguro de eliminar este producto?',
+                text: "¡Esta acción no se puede deshacer!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#00a65a', 
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+                position: 'center'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'eliminar_producto.php?id=' + id;
+                }
+            });
+        }
+    </script>
 
     <?php include "include/footer.php"; ?>
 </body>

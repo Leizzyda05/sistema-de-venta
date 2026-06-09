@@ -6,6 +6,7 @@ $password = '';
 $database = 'sistema_de_venta'; 
 
 $conexion = @mysqli_connect($servername, $username, $password, $database);
+mysqli_set_charset($conexion, "utf8"); 
 
 if (!$conexion) {
     die("Error de conexión con la base de datos.");
@@ -16,6 +17,7 @@ if (!$conexion) {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <?php include "include/scripts.php"; ?>
     <title>Lista de Categorías</title>
     
@@ -23,24 +25,25 @@ if (!$conexion) {
         /* Estilos para la ventana de alerta flotante */
         .custom_alert_floating {
             position: fixed;
-            top: 20px;
+            bottom: 20px;
             right: 20px;
             background-color: #2ecc71; /* Verde éxito */
             color: white;
-            padding: 15px 25px;
+            padding: 16px 25px;
             border-radius: 4px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             font-size: 16px;
+            font-family: 'Open Sans', sans-serif;
             font-weight: bold;
             z-index: 9999;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             opacity: 1;
             transform: translateY(0);
-            transition: opacity 0.5s ease, transform 0.5s ease;
+            transition: right 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
-
+                
         .custom_alert_floating i {
             font-size: 20px;
         }
@@ -48,6 +51,99 @@ if (!$conexion) {
 </head>
 <body>
     <?php include "include/header.php"; ?>
+
+    <?php if (isset($_GET['status'])): ?>
+        <?php 
+            // Definimos el mensaje y el color de fondo según el resultado
+            $mensaje_delete = "";
+            $bg_color = "#2ecc71"; // Verde éxito por defecto
+            $icono = "fas fa-check-circle";
+
+            if ($_GET['status'] == 'deleted') {
+                $mensaje_delete = "¡Categoría eliminada correctamente!";
+            } elseif ($_GET['status'] == 'error_has_products') {
+                $mensaje_delete = "No se puede eliminar, contiene productos asignados.";
+                $bg_color = "#e74c3c"; // Rojo error
+                $icono = "fas fa-exclamation-triangle";
+            }
+        ?>
+
+        <?php if (!empty($mensaje_delete)): ?>
+            <style>
+                .custom-toast-delete {
+                    position: fixed;
+                    bottom: 20px; /* Posicionado abajo */
+                    right: -400px; /* Inicia oculto a la derecha */
+                    background-color: <?php echo $bg_color; ?>; 
+                    color: #ffffff;
+                    padding: 16px 25px;
+                    border-radius: 6px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    font-family: 'Open Sans', sans-serif;
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    z-index: 9999;
+                    transition: right 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                }
+
+                .custom-toast-delete.show {
+                    right: 20px; /* Se desliza a su posición visible abajo a la derecha */
+                }
+
+                .custom-toast-delete i {
+                    font-size: 20px;
+                }
+
+                .custom-toast-delete .toast-close-delete {
+                    margin-left: 15px;
+                    cursor: pointer;
+                    opacity: 0.7;
+                    transition: opacity 0.2s;
+                }
+
+                .custom-toast-delete .toast-close-delete:hover {
+                    opacity: 1;
+                }
+            </style>
+
+            <div id="toastDeleteMessage" class="custom-toast-delete">
+                <i class="<?php echo $icono; ?>"></i>
+                <span><?php echo $mensaje_delete; ?></span>
+                <i class="fas fa-times toast-close-delete" onclick="closeToastDelete()"></i>
+            </div>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    var toastDelete = document.getElementById("toastDeleteMessage");
+                    
+                    // Se desliza suavemente desde la derecha a los 200ms
+                    setTimeout(function() {
+                        if(toastDelete) toastDelete.classList.add("show");
+                    }, 200);
+
+                    // Se cierra automáticamente a los 4 segundos
+                    setTimeout(function() {
+                        closeToastDelete();
+                    }, 4200);
+                });
+
+                function closeToastDelete() {
+                    var toastDelete = document.getElementById("toastDeleteMessage");
+                    if(toastDelete) {
+                        toastDelete.classList.remove("show");
+                        setTimeout(function() {
+                            toastDelete.remove();
+                        }, 500);
+                    }
+                }
+                
+                // Limpia la URL para evitar que la alerta vuelva a salir si recargan la página
+                window.history.replaceState({}, document.title, window.location.pathname);
+            </script>
+        <?php endif; ?>
+    <?php endif; ?>
+
     <?php if (isset($_GET['msg']) && $_GET['msg'] == 'updated'): ?>
     
     <style>
@@ -199,7 +295,7 @@ if (!$conexion) {
                                     <td><?php echo $fecha; ?></td>
                                     <td class="text-center">
                                         <a class="link_edit" href="editar_categoria.php?id=<?php echo $data['id_categoria']; ?>"><i class="fas fa-edit"></i> Editar</a>
-                                        <a class="link_delete" href="eliminar_categoria.php?id=<?php echo $data['id_categoria']; ?>" onclick="return confirm('¿Estás seguro de eliminar esta categoría?');"><i class="fas fa-trash-alt"></i> Eliminar</a>
+                                        <button type="button" class="btn_delete" onclick="confirmarEliminacion(<?php echo $data['id_categoria']; ?>)">Eliminar</button>
                                     </td>
                                 </tr>
                     <?php
@@ -216,6 +312,28 @@ if (!$conexion) {
             </table>
         </div>
     </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function confirmarEliminacion(id) {
+            Swal.fire({
+                title: '¿Estás seguro de eliminar esta categoría?',
+                text: "¡Esta acción no se puede deshacer!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#00a65a', 
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+                position: 'center'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'eliminar_categoria.php?id=' + id;
+                }
+            });
+        }
+    </script>
 
     <?php include "include/footer.php"; ?>
 </body>

@@ -5,6 +5,7 @@ $password = '';
 $database = 'sistema_de_venta'; 
 
 $conexion = @mysqli_connect($servername, $username, $password, $database);
+mysqli_set_charset($conexion, "utf8"); // <-- Agrega esta línea
 
 // Alerta de conexión segura
 if (!$conexion) {
@@ -12,7 +13,7 @@ if (!$conexion) {
     die("Error de conexión con la base de datos.");
 }
 
-// 3. PROCESAMIENTO DEL FORMULARIO ENVIADO POR POST
+// PROCESAMIENTO DEL FORMULARIO ENVIADO POR POST
 $alert = ''; 
 
 if (!empty($_POST)) {
@@ -21,7 +22,9 @@ if (!empty($_POST)) {
         $alert = '<p class="msg_error">Todos los campos son obligatorios.</p>';
     } else {
         $nombre_producto = mysqli_real_escape_string($conexion, $_POST['nombre_producto']);
-        $precio_venta    = mysqli_real_escape_string($conexion, $_POST['precio_venta']);
+        // Reemplazamos la coma por punto en caso de que el usuario escriba con coma
+        $precio_venta    = str_replace(',', '.', $_POST['precio_venta']);
+        $precio_venta    = mysqli_real_escape_string($conexion, $precio_venta);
         $id_categoria    = mysqli_real_escape_string($conexion, $_POST['id_categoria']);
         
         // Comprobar si el producto ya existe en la base de datos
@@ -46,11 +49,11 @@ if (!empty($_POST)) {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <?php include "include/scripts.php"; ?>
-    <title>Registro de Producto</title>
+    <title>Registro de Producto ($)</title>
 </head>
 <body>
     <?php include "include/header.php"; ?>
@@ -66,8 +69,8 @@ if (!empty($_POST)) {
                 <label for="nombre_producto">Nombre del Producto</label>
                 <input type="text" name="nombre_producto" id="nombre_producto" placeholder="Nombre del producto" autocomplete="off">
 
-                <label for="precio_venta">Precio de Venta</label>
-                <input type="number" step="0.01" name="precio_venta" id="precio_venta" placeholder="Ej. 50,00 Bs">
+                <label for="precio_venta">Precio de Venta (USD $)</label>
+                <input type="number" step="0.01" min="0" name="precio_venta" id="precio_venta" placeholder="Ej. 10.50">
 
                 <label for="id_categoria">Categoría</label>
                 <select name="id_categoria" id="id_categoria">
