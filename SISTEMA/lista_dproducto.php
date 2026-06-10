@@ -12,13 +12,13 @@ if (!$conexion) {
     die("Error de conexión con la base de datos.");
 }
 
-// 2. OBTENER LA TASA DEL DÓLAR DESDE EL BCV
-$tasa_dolar_num = 1.0; 
+// 2. OBTENER LA TASA DEL DÓLAR DESDE EL BCV (Sincronizado con index.php)
+$tasa_dolar_num = 1.0; // Valor por defecto por seguridad matemática
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, "https://www.bcv.org.ve/");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)');
+curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 curl_setopt($ch, CURLOPT_TIMEOUT, 5); 
@@ -27,12 +27,21 @@ curl_close($ch);
 
 if ($html !== false && !empty($html)) {
     $dom = new DOMDocument();
-    @$dom->loadHTML($html);
+    // Desactivamos advertencias por código HTML de la web del BCV
+    libxml_use_internal_errors(true);
+    $dom->loadHTML($html);
+    libxml_clear_errors();
+    
     $xpath = new DOMXPath($dom);
-    $query_usd = $xpath->query('//div[@id="dolar"]//div[contains(@class, "centrado")]/strong');
+    
+    // Consulta XPath unificada y precisa
+    $query_usd = $xpath->query('//div[@id="dolar"]//strong');
     
     if ($query_usd->length > 0) {
-        $raw_usd = trim($query_usd->item(0)->nodeValue);
+        // Limpiamos espacios y saltos de línea inusuales
+        $raw_usd = preg_replace('/\s+/', ' ', trim($query_usd->item(0)->nodeValue));
+        
+        // Conversión del formato venezolano (42.123,45) al formato matemático de PHP (42123.45)
         $tasa_clean = str_replace(',', '.', str_replace('.', '', $raw_usd));
         $tasa_dolar_num = (float)$tasa_clean;
     }
@@ -101,14 +110,12 @@ function mysqli_real_escape_with_like_support($conn, $str) {
             font-size: 14px;
         }
 
-        /* =========================================================================
-           ESTILOS PARA LAS NOTIFICACIONES FLOTANTES TIPO TOAST (INFERIOR DERECHA)
-           ========================================================================= */
+        /* NOTIFICACIONES TOAST */
         .custom-toast-delete {
             position: fixed;
-            bottom: 20px;       /* Posicionado abajo */
-            right: -400px;      /* Inicia oculto a la derecha fuera de la pantalla */
-            background-color: #2ecc71; /* Verde éxito por defecto */
+            bottom: 20px;       
+            right: -400px;      
+            background-color: #2ecc71; 
             color: #ffffff;
             padding: 16px 25px;
             border-radius: 6px;
@@ -123,9 +130,8 @@ function mysqli_real_escape_with_like_support($conn, $str) {
             transition: right 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
-        /* Clase activa para activar el deslizamiento */
         .custom-toast-delete.show {
-            right: 20px;       /* Se desliza a su posición visible abajo a la derecha */
+            right: 20px;       
         }
 
         .custom-toast-delete i {
@@ -150,16 +156,15 @@ function mysqli_real_escape_with_like_support($conn, $str) {
 
     <?php 
     $mensaje_alerta = "";
-    $bg_color = "#2ecc71"; // Verde por defecto
+    $bg_color = "#2ecc71"; 
     $icono = "fas fa-check-circle";
 
-    // Evaluar parámetros de redirección URL
     if (isset($_GET['status'])) {
         if ($_GET['status'] == 'deleted') {
             $mensaje_alerta = "¡Producto eliminado correctamente!";
         } elseif ($_GET['status'] == 'error') {
             $mensaje_alerta = "No se pudo eliminar el producto del inventario.";
-            $bg_color = "#e74c3c"; // Rojo para fallos
+            $bg_color = "#e74c3c"; 
             $icono = "fas fa-exclamation-triangle";
         }
     } elseif (isset($_GET['msg'])) {
@@ -181,13 +186,10 @@ function mysqli_real_escape_with_like_support($conn, $str) {
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 var toastDelete = document.getElementById("toastDeleteMessage");
-                
-                // Hace aparecer el toast deslizándose suavemente desde la derecha a los 200ms
                 setTimeout(function() {
                     if(toastDelete) toastDelete.classList.add("show");
                 }, 200);
 
-                // Desaparece automáticamente después de 4 segundos (4000ms)
                 setTimeout(function() {
                     closeToastDelete();
                 }, 4200);
@@ -196,14 +198,12 @@ function mysqli_real_escape_with_like_support($conn, $str) {
             function closeToastDelete() {
                 var toastDelete = document.getElementById("toastDeleteMessage");
                 if(toastDelete) {
-                    toastDelete.classList.remove("show"); // Inicia animación de salida
+                    toastDelete.classList.remove("show"); 
                     setTimeout(function() {
-                        toastDelete.remove(); // Remueve el elemento del HTML por completo
+                        toastDelete.remove(); 
                     }, 500);
                 }
             }
-            
-            // Limpia los parámetros de la barra de direcciones para evitar duplicados al recargar
             window.history.replaceState({}, document.title, window.location.pathname);
         </script>
     <?php endif; ?>
@@ -258,6 +258,7 @@ function mysqli_real_escape_with_like_support($conn, $str) {
 
                             while ($data = mysqli_fetch_array($query)) {
                                 $precio_usd = (float)$data['precio_venta'];
+                                // COMUNICACIÓN INTERNA: Multiplicación por la tasa limpia del BCV
                                 $precio_bs = $precio_usd * $tasa_dolar_num;
                                 $fecha = date('d-m-Y g:i a', strtotime($data['date_add']));
                     ?>
@@ -273,7 +274,7 @@ function mysqli_real_escape_with_like_support($conn, $str) {
                                     <td><?php echo $fecha; ?></td>
                                     <td class="text-center">
                                         <a class="link_edit" href="editar_producto.php?id=<?php echo $data['id_producto']; ?>"><i class="fas fa-edit"></i> Editar</a>
-                                        <button type="button" class="btn_delete" onclick="confirmarEliminacion(<?php echo $data['id_producto']; ?>)">Eliminar</button>
+                                        <button type="button" class="link_edit btn_delete" style="border: none; cursor: pointer;" onclick="confirmarEliminacion(<?php echo $data['id_producto']; ?>)">Eliminar</button>
                                     </td>
                                 </tr>
                     <?php

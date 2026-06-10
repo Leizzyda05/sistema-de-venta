@@ -1,5 +1,5 @@
 <?php
-// Variables con valores iniciales por si falla la conexión
+// Variables con valores iniciales por si falla la conexión o fin de semana
 $precio_dolar = "No disponible";
 
 // 1. Iniciamos cURL para descargar la web de forma segura
@@ -7,12 +7,12 @@ $ch = curl_init();
 
 curl_setopt($ch, CURLOPT_URL, "https://www.bcv.org.ve/");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-// Engañamos al servidor del BCV simulando ser un navegador Chrome real
+// Simula ser un navegador Chrome real
 curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
 // OBLIGATORIO PARA XAMPP: Ignorar errores de certificados SSL locales
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-// Tiempo máximo de espera para que no se quede colgada tu página (5 segundos)
+// Tiempo máximo de espera (5 segundos)
 curl_setopt($ch, CURLOPT_TIMEOUT, 5); 
 
 $html = curl_exec($ch);
@@ -29,12 +29,11 @@ if ($html !== false && !empty($html)) {
     
     $xpath = new DOMXPath($dom);
 
-    // Buscamos la etiqueta <strong> exacta que está dentro del bloque de Dólar
-    $query_usd = $xpath->query('//div[@id="dolar"]//div[contains(@class, "centrado")]/strong');
+    // Consulta XPath exacta y limpia
+    $query_usd = $xpath->query('//div[@id="dolar"]//strong');
     if ($query_usd->length > 0) {
-        $precio_dolar = trim($query_usd->item(0)->nodeValue) . " Bs.";
+        $precio_dolar = preg_replace('/\s+/', ' ', trim($query_usd->item(0)->nodeValue)) . " Bs.";
     }
-
 }
 ?>
 
@@ -45,7 +44,7 @@ if ($html !== false && !empty($html)) {
     <?php include "include/scripts.php"; ?>
     <title>Sistema Venta</title>  
     <style>
-    /* Contenedor principal blanco (Todo se encierra aquí) */
+    /* Contenedor principal blanco */
     .contenedor_tasas {
         max-width: 600px;
         background: #fff;
@@ -54,7 +53,7 @@ if ($html !== false && !empty($html)) {
         border-radius: 8px;
         box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1); 
         text-align: center;
-        font-family: 'Arial', sans-serif; /* O la fuente que use tu sistema */
+        font-family: 'Arial', sans-serif;
     }
 
     /* Título de bienvenida */
@@ -98,13 +97,9 @@ if ($html !== false && !empty($html)) {
         box-shadow: inset 0px 0px 5px rgba(0,0,0,0.05);
     }
 
-    /* Bordes de color inferiores distintivos */
+    /* Bordes de color inferiores */
     .caja_moneda.usd {
-        border-bottom: 4px solid #2ecc71; /* Verde BCV / Éxito */
-    }
-
-    .caja_moneda.eur {
-        border-bottom: 4px solid #3498db; /* Azul */
+        border-bottom: 4px solid #2ecc71; /* Verde BCV */
     }
 
     /* Texto pequeño de arriba (DÓLAR USD) */
@@ -131,19 +126,19 @@ if ($html !== false && !empty($html)) {
     
     <section id="container">
         <div class="contenedor_tasas">
-    <h2>Bienvenido al Sistema</h2>
-    <h3>Tasa Oficial (BCV)</h3>
-    <hr>
+            <h2>Bienvenido al Sistema</h2>
+            <h3>Tasa Oficial (BCV)</h3>
+            <hr>
 
-    <div class="flex_divisas">
-        
-        <div class="caja_moneda usd">
-            <p class="titulo_moneda">Dólar USD</p>
-            <p class="valor_moneda">567,68280000 Bs.</p>
+            <div class="flex_divisas">
+                
+                <div class="caja_moneda usd">
+                    <p class="titulo_moneda">Dólar USD</p>
+                    <p class="valor_moneda"><?php echo $precio_dolar; ?></p>
+                </div>
+
+            </div>
         </div>
-
-    </div>
-</div>
     </section>
 
     <?php include "include/footer.php"; ?>

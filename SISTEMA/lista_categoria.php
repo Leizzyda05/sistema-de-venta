@@ -295,7 +295,7 @@ if (!$conexion) {
                                     <td><?php echo $fecha; ?></td>
                                     <td class="text-center">
                                         <a class="link_edit" href="editar_categoria.php?id=<?php echo $data['id_categoria']; ?>"><i class="fas fa-edit"></i> Editar</a>
-                                        <button type="button" class="btn_delete" onclick="confirmarEliminacion(<?php echo $data['id_categoria']; ?>)">Eliminar</button>
+                                        <button type="button" class="link_edit btn_delete" style="border: none; cursor: pointer;" onclick="confirmarEliminacion(<?php echo $data['id_categoria']; ?>)">Eliminar</button>
                                     </td>
                                 </tr>
                     <?php

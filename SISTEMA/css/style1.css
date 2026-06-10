@@ -377,7 +377,7 @@ table tbody tr:hover {
 }
 
 /* Botones de Acción (Editar y Eliminar) */
-.link_edit, .link_delete {
+.link_edit, .btn_delete {
     padding: 6px 10px;
     border-radius: 4px;
     color: #fff;
@@ -395,9 +395,9 @@ table tbody tr:hover {
     background: #398996;
 }
 
-.link_delete {
+.btn_delete {
     background: #dc3545;
 }
-.link_delete:hover {
+.btn_delete:hover  {
     background: #bd2130;
 }
