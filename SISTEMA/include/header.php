@@ -1,10 +1,8 @@
 <?php 
 
-    session_start();    
-    if (empty($_SESSION['active'])){ //si no existe la variable sesion {
-        header('location: ../');
-        exit(); //hace esto
-    }
+    if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ?>
 
 <header>

@@ -1,13 +1,19 @@
-<div class="licencia-bnd" style="background-color: #f8f9fa; border-top: 1px solid #dee2e6; padding: 20px; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin-top: 30px;">
-    <p style="margin: 0 0 8px 0; color: #333; font-size: 14px;">
-        Este sistema está protegido bajo la licencia internacional 
-        <a href="https://creativecommons.org/licenses/by-nd/4.0/deed.es" target="_blank" rel="license noopener noreferrer" style="color: #007bff; font-weight: bold; text-decoration: none;">
-            Creative Commons Atribución-SinDerivadas 4.0 (CC BY-ND 4.0)
+<?php
+/**
+ * Pie de página del sistema - Licencia CC BY-NC-ND 4.0 (Diseño compacto)
+ */
+?>
+<div class="site-footer-credits" style="text-align: center; padding: 20px; font-family: sans-serif; font-size: 14px; color: #555; line-height: 1.6;">
+    
+    <p style="margin: 0 0 10px 0; display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap;">
+        <span>&copy; <?php echo date('Y'); ?> <strong>LeiPart</strong>. Todos los derechos reservados.</span>
+        <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.es" target="_blank" style="text-decoration: none; display: inline-block;">
+            <img alt="Licencia Creative Commons" style="border-width:0; display: block;" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" />
         </a>
     </p>
-    <p style="margin: 0; font-size: 12px; color: #6c757d; line-height: 1.5;">
-        <span style="background-color: #e9ecef; padding: 2px 6px; border-radius: 3px; font-weight: bold; color: #495057; display: inline-block; margin-right: 5px;">CÓDIGO VISIBLE</span> 
-        Permitida su visualización, auditoría y uso institucional. 
-        <strong style="color: #dc3545;">Está estrictamente prohibida la edición, alteración, modificación o distribución de versiones derivadas de este software.</strong>
+    
+    <p style="margin: 0;">
+        Este sistema está bajo una <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.es" target="_blank" style="color: #0066cc; text-decoration: none; font-weight: 500;">Licencia Creative Commons Atribución-NoComercial-SinDerivadas 4.0 Internacional</a>.
     </p>
+
 </div>

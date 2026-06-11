@@ -4,6 +4,7 @@ $servername = 'localhost';
 $username = 'root';
 $password = ''; 
 $database = 'sistema_de_venta'; 
+
 $conexion = @mysqli_connect($servername, $username, $password, $database);
 
 // 2. PROCESAR LA ELIMINACIÓN

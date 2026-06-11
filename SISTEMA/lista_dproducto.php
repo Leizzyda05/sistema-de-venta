@@ -1,50 +1,31 @@
 <?php
-// 1. CONEXIÓN A LA BASE DE DATOS
+// 1. CONEXIÓN A LA BASE DE DATOS Y SESIÓN
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 $servername = 'localhost';
 $username = 'root';
 $password = ''; 
 $database = 'sistema_de_venta'; 
 
 $conexion = @mysqli_connect($servername, $username, $password, $database);
-mysqli_set_charset($conexion, "utf8"); 
 
 if (!$conexion) {
-    die("Error de conexión con la base de datos.");
+    die("Error de conexión con la base de datos: " . mysqli_connect_error());
 }
 
-// 2. OBTENER LA TASA DEL DÓLAR DESDE EL BCV (Sincronizado con index.php)
+mysqli_set_charset($conexion, "utf8"); 
+
+// 2. OBTENER LA TASA DESDE LA BASE DE DATOS (Sincronizado con index.php)
 $tasa_dolar_num = 1.0; // Valor por defecto por seguridad matemática
 
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, "https://www.bcv.org.ve/");
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-curl_setopt($ch, CURLOPT_TIMEOUT, 5); 
-$html = curl_exec($ch);
-curl_close($ch);
+$query_tasa = mysqli_query($conexion, "SELECT valor FROM configuracion WHERE id = 1");
 
-if ($html !== false && !empty($html)) {
-    $dom = new DOMDocument();
-    // Desactivamos advertencias por código HTML de la web del BCV
-    libxml_use_internal_errors(true);
-    $dom->loadHTML($html);
-    libxml_clear_errors();
-    
-    $xpath = new DOMXPath($dom);
-    
-    // Consulta XPath unificada y precisa
-    $query_usd = $xpath->query('//div[@id="dolar"]//strong');
-    
-    if ($query_usd->length > 0) {
-        // Limpiamos espacios y saltos de línea inusuales
-        $raw_usd = preg_replace('/\s+/', ' ', trim($query_usd->item(0)->nodeValue));
-        
-        // Conversión del formato venezolano (42.123,45) al formato matemático de PHP (42123.45)
-        $tasa_clean = str_replace(',', '.', str_replace('.', '', $raw_usd));
-        $tasa_dolar_num = (float)$tasa_clean;
-    }
+if ($query_tasa && mysqli_num_rows($query_tasa) > 0) {
+    $data_tasa = mysqli_fetch_assoc($query_tasa);
+    // Convertimos a float para poder multiplicar matemáticamente sin errores
+    $tasa_dolar_num = (float)$data_tasa['valor']; 
 }
 
 // CAPTURAR EL TÉRMINO DE BÚSQUEDA
@@ -258,7 +239,7 @@ function mysqli_real_escape_with_like_support($conn, $str) {
 
                             while ($data = mysqli_fetch_array($query)) {
                                 $precio_usd = (float)$data['precio_venta'];
-                                // COMUNICACIÓN INTERNA: Multiplicación por la tasa limpia del BCV
+                                // Multiplicación por la tasa guardada en tu Base de Datos
                                 $precio_bs = $precio_usd * $tasa_dolar_num;
                                 $fecha = date('d-m-Y g:i a', strtotime($data['date_add']));
                     ?>
