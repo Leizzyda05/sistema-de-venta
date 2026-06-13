@@ -96,7 +96,7 @@ function mysqli_real_escape_with_like_support($conn, $str) {
             position: fixed;
             bottom: 20px;       
             right: -400px;      
-            background-color: #2ecc71; 
+            background-color: #046a5b;
             color: #ffffff;
             padding: 16px 25px;
             border-radius: 6px;
@@ -137,7 +137,7 @@ function mysqli_real_escape_with_like_support($conn, $str) {
 
     <?php 
     $mensaje_alerta = "";
-    $bg_color = "#2ecc71"; 
+    $bg_color = "#046a5b"; 
     $icono = "fas fa-check-circle";
 
     if (isset($_GET['status'])) {
@@ -229,7 +229,7 @@ function mysqli_real_escape_with_like_support($conn, $str) {
                                                       FROM productos p 
                                                       INNER JOIN categorias c ON p.id_categoria = c.id_categoria 
                                                       $where
-                                                      ORDER BY p.id_producto ASC");
+                                                      ORDER BY p.nombre_producto ASC");
                     
                     if ($query) {
                         $result = mysqli_num_rows($query);

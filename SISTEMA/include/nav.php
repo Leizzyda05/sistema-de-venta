@@ -25,7 +25,8 @@ if ($conexion_nav) {
 ?>
 
 <nav>
-    <ul>
+    <ul style="display: flex; align-items: center; width: 100%; margin: 0; padding: 0; list-style: none;">
+        
         <li class="principal">
             <a href="index.php" class="link_inicio_top"><i class="fas fa-home"></i> Inicio</a>
         </li>
@@ -46,10 +47,10 @@ if ($conexion_nav) {
             </ul>
         </li>
 
-        <li style="margin-left: 1000px;; padding: 29px 20px; font-size: 14px; font-weight: bold; color: #ffffff; font-family: 'Arial', sans-serif; list-style: none;">
-            <i class="fas fa-dollar-sign" style="color: #58d68d;"></i> Tasa USD: 
-            <span style="background: rgba(255, 255, 255, 0.15); padding: 5px 15px; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.3); color: #ffffff; margin-left: 5px;">
-                <?php echo htmlspecialchars($tasa_bcv); ?> Bs.
+        <li style="margin-left: auto; padding: 0 20px; font-size: 14px; font-weight: bold; color: #ffffff; font-family: 'Arial', sans-serif;">
+            <i class="fas fa-dollar-sign" style="color: #58d68d;"></i> TASA USD: 
+            <span style="background: rgba(255, 255, 255, 0.15); padding: 5px 15px; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.3); color: #ffffff; margin-left: 5px; display: inline-block;">
+               <?php echo htmlspecialchars($tasa_bcv); ?> Bs.
             </span>
         </li>
     </ul>

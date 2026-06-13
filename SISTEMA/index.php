@@ -124,7 +124,7 @@ if ($query_tasa && mysqli_num_rows($query_tasa) > 0) {
     }
 
     .btn_guardar {
-        background: #2ecc71;
+        background: #1a6b54;
         color: #fff;
         border: none;
         padding: 10px 30px;
@@ -195,7 +195,7 @@ if ($query_tasa && mysqli_num_rows($query_tasa) > 0) {
        CONTROLADOR DE LA NOTIFICACIÓN "TASA GUARDADA"
        ========================================================================== */
     $mensaje_alerta = "";
-    $bg_color = "#2ecc71"; 
+    $bg_color = "#046a5b";
     $icono = "fas fa-check-circle";
 
     if (isset($_GET['msg']) && $_GET['msg'] == 'rate_success') { 

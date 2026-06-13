@@ -31,7 +31,7 @@ if (!$conexion) {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background-color: #2ecc71; /* Verde éxito */
+            background-color: #046a5b; /* Verde éxito */
             color: white;
             padding: 16px 25px;
             border-radius: 4px;
@@ -60,7 +60,7 @@ if (!$conexion) {
         <?php 
             // Definimos el mensaje y el color de fondo según el resultado
             $mensaje_delete = "";
-            $bg_color = "#2ecc71"; // Verde éxito por defecto
+            $bg_color = "#046a5b"; // Verde éxito por defecto
             $icono = "fas fa-check-circle";
 
             if ($_GET['status'] == 'deleted') {
@@ -74,11 +74,11 @@ if (!$conexion) {
 
         <?php if (!empty($mensaje_delete)): ?>
             <style>
-                .custom-toast-delete {
+                .custom-toast {
                     position: fixed;
-                    bottom: 20px; /* Posicionado abajo */
-                    right: -400px; /* Inicia oculto a la derecha */
-                    background-color: <?php echo $bg_color; ?>; 
+                    bottom: 20px;  
+                    right: -400px; /* Se mantiene oculto a la derecha */
+                    background-color: <?php echo $bg_color; ?>; /* Color dinámico (verde o rojo) */
                     color: #ffffff;
                     padding: 16px 25px;
                     border-radius: 6px;
@@ -91,59 +91,60 @@ if (!$conexion) {
                     transition: right 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
                 }
 
-                .custom-toast-delete.show {
-                    right: 20px; /* Se desliza a su posición visible abajo a la derecha */
+                .custom-toast.show {
+                    right: 20px; /* Desplazamiento hacia la posición visible */
                 }
 
-                .custom-toast-delete i {
+                .custom-toast i {
                     font-size: 20px;
                 }
 
-                .custom-toast-delete .toast-close-delete {
+                .custom-toast .toast-close {
                     margin-left: 15px;
                     cursor: pointer;
                     opacity: 0.7;
                     transition: opacity 0.2s;
                 }
 
-                .custom-toast-delete .toast-close-delete:hover {
+                .custom-toast .toast-close:hover {
                     opacity: 1;
                 }
             </style>
 
-            <div id="toastDeleteMessage" class="custom-toast-delete">
+            <div id="toastDeleteMessage" class="custom-toast">
                 <i class="<?php echo $icono; ?>"></i>
                 <span><?php echo $mensaje_delete; ?></span>
-                <i class="fas fa-times toast-close-delete" onclick="closeToastDelete()"></i>
+                <i class="fas fa-times toast-close" onclick="closeToastDelete()"></i>
             </div>
 
             <script>
                 document.addEventListener("DOMContentLoaded", function() {
-                    var toastDelete = document.getElementById("toastDeleteMessage");
+                    // Ahora sí busca el ID correcto 'toastDeleteMessage'
+                    var toast = document.getElementById("toastDeleteMessage");
                     
-                    // Se desliza suavemente desde la derecha a los 200ms
-                    setTimeout(function() {
-                        if(toastDelete) toastDelete.classList.add("show");
-                    }, 200);
+                    if (toast) {
+                        // Aparece deslizándose a los 200 milisegundos
+                        setTimeout(function() {
+                            toast.classList.add("show");
+                        }, 200);
 
-                    // Se cierra automáticamente a los 4 segundos
-                    setTimeout(function() {
-                        closeToastDelete();
-                    }, 4200);
+                        // Se desvanece automáticamente después de 4 segundos
+                        setTimeout(function() {
+                            closeToastDelete();
+                        }, 4200);
+                    }
                 });
 
                 function closeToastDelete() {
-                    var toastDelete = document.getElementById("toastDeleteMessage");
-                    if(toastDelete) {
-                        toastDelete.classList.remove("show");
+                    var toast = document.getElementById("toastDeleteMessage");
+                    if(toast) {
+                        toast.classList.remove("show");
+                        // Remueve el elemento del HTML una vez termine la transición
                         setTimeout(function() {
-                            toastDelete.remove();
+                            toast.remove();
                         }, 500);
                     }
                 }
-                
-                // Limpia la URL para evitar que la alerta vuelva a salir si recargan la página
-                window.history.replaceState({}, document.title, window.location.pathname);
             </script>
         <?php endif; ?>
     <?php endif; ?>
@@ -153,9 +154,9 @@ if (!$conexion) {
     <style>
         .custom-toast {
             position: fixed;
-            top: 20px;
-            right: -400px; /* Inicia oculto a la derecha */
-            background-color: #2ecc71; /* Verde éxito */
+            bottom: 20px;  /* <--- CAMBIADO: Antes decía 'top: 20px', ahora se ancla abajo */
+            right: -400px; /* Se mantiene oculto a la derecha */
+            background-color: #046a5b; 
             color: #ffffff;
             padding: 16px 25px;
             border-radius: 6px;
@@ -169,7 +170,7 @@ if (!$conexion) {
         }
 
         .custom-toast.show {
-            right: 20px; /* Se desliza a su posición visible */
+            right: 20px; /* Se desliza a su posición visible abajo a la derecha */
         }
 
         .custom-toast i {
@@ -194,7 +195,7 @@ if (!$conexion) {
         <i class="fas fa-times toast-close" onclick="closeToast()"></i>
     </div>
 
-    <script>
+     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var toast = document.getElementById("toastMessage");
             
@@ -223,39 +224,81 @@ if (!$conexion) {
 
 <?php endif; ?>
     
-    <?php if (isset($_GET['msg'])): ?>
+    <?php if (isset($_GET['msg']) && ($_GET['msg'] == 'success' || $_GET['msg'] == 'register_success')): ?>
         <?php 
-            $mensaje = "";
-            if ($_GET['msg'] == 'success') {
-                $mensaje = "¡Categoría actualizada exitosamente!";
-            } elseif ($_GET['msg'] == 'register_success') {
-                $mensaje = "¡Categoría guardada exitosamente!";
-            }
+            // Definimos el mensaje correcto según el parámetro recibido
+            $mensaje = ($_GET['msg'] == 'register_success') ? "¡Categoría guardada exitosamente!" : "¡Categoría actualizada exitosamente!";
         ?>
         
-        <?php if (!empty($mensaje)): ?>
-            <div id="alerta-flotante" class="custom_alert_floating">
-                <i class="fas fa-check-circle"></i> <?php echo $mensaje; ?>
-            </div>
+        <style>
+            .custom-toast {
+                position: fixed;
+                bottom: 20px;  /* Anclado abajo */
+                right: -400px; /* Inicia oculto a la derecha */
+                background-color: #046a5b; /* Verde éxito */
+                color: #ffffff;
+                padding: 16px 25px;
+                border-radius: 6px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                font-family: 'Open Sans', sans-serif;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                z-index: 9999;
+                transition: right 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            }
 
-            <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    const alerta = document.getElementById('alerta-flotante');
-                    if (alerta) {
-                        // Se mantiene visible por 3 segundos
-                        setTimeout(() => {
-                            alerta.style.opacity = '0';
-                            alerta.style.transform = 'translateY(-20px)'; // Efecto visual de subida
-                            
-                            // Se elimina por completo del HTML tras la animación
-                            setTimeout(() => {
-                                alerta.remove();
-                            }, 500); 
-                        }, 3000);
-                    }
-                });
-            </script>
-        <?php endif; ?>
+            .custom-toast.show {
+                right: 20px; /* Se despliza a la posición visible */
+            }
+
+            .custom-toast i {
+                font-size: 20px;
+            }
+
+            .custom-toast .toast-close {
+                margin-left: 15px;
+                cursor: pointer;
+                opacity: 0.7;
+                transition: opacity 0.2s;
+            }
+
+            .custom-toast .toast-close:hover {
+                opacity: 1;
+            }
+        </style>
+
+        <div id="toastMessage" class="custom-toast">
+            <i class="fas fa-check-circle"></i>
+            <span><?php echo $mensaje; ?></span>
+            <i class="fas fa-times toast-close" onclick="closeToast()"></i>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var toast = document.getElementById("toastMessage");
+                
+                // Efecto de deslizamiento desde la derecha
+                setTimeout(function() {
+                    if(toast) toast.classList.add("show");
+                }, 200);
+
+                // Desaparece automáticamente después de 4 segundos
+                setTimeout(function() {
+                    closeToast();
+                }, 4200);
+            });
+
+            function closeToast() {
+                var toast = document.getElementById("toastMessage");
+                if(toast) {
+                    toast.classList.remove("show"); // Se desliza hacia la derecha para ocultarse
+                    setTimeout(function() {
+                        toast.remove(); // Se elimina del HTML
+                    }, 500);
+                }
+            }
+        </script>
     <?php endif; ?>
 
     <section id="container">
@@ -282,7 +325,7 @@ if (!$conexion) {
                     // -------------------------------------------------------------
                     $query = mysqli_query($conexion, "SELECT id_categoria, nombre_categoria, date_add 
                                                       FROM categorias 
-                                                      ORDER BY id_categoria ASC");
+                                                      ORDER BY nombre_categoria ASC");                                             
                     
                     if ($query) {
                         $result = mysqli_num_rows($query);

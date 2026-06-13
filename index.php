@@ -75,5 +75,7 @@ if (!empty($_SESSION['active']))
         </form>
 
     </section>
+        <?php include "sistema/include/footer.php"; ?>
+
 </body>
 </html>
